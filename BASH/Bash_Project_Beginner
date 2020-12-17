@@ -1,0 +1,36 @@
+#!/bin/bash
+echo "Welcome to this Project"
+
+#Pull the first line of changelog doc, separate the version number and store as variable version
+firstline=$(head -n 1 source/changelog.md)
+read -a splitfirstline <<< $firstline
+version=${splitfirstline[1]}
+echo "You are building version" $version
+
+#Prompt User to continue
+echo "Enter 1 to continue, or 0 to exit"
+read versioncontinue
+
+if [ $versioncontinue -eq 1 ]
+then
+  echo "Okay let's continue"
+  
+  #Loop through all files in source directory
+  for filename in source/*
+  do 
+    if [ $filename != "source/secretinfo.md" ] #Ignore secretinfo
+    then
+      echo $filename "is being copied"
+      cp $filename build    #Copy files into build directory
+    else
+      echo $filename "is not being copied"
+    fi
+  done
+
+  #Change to build directory, reaffirm version number and print contnets
+  cd build/
+  echo "In your Build folder for " $version " is: "
+  ls
+else
+  echo "Please come back when you are ready"
+fi
